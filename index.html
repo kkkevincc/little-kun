@@ -3,139 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI启示</title>
+    <title>AI启示 - 轻量决策辅助工具</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- 苹果导航栏 -->
-    <nav class="navbar">
-        <h1 class="navbar-title">AI启示</h1>
-        <button class="user-button" id="userCenterBtn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="2"/>
-                <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            <span class="notification-badge" id="notificationBadge" style="display: none;">3</span>
-        </button>
-    </nav>
-
-    <!-- 苹果下拉菜单 -->
-    <div class="dropdown-menu" id="dropdownMenu">
-        <div class="dropdown-item" id="historyBtn">
-            <svg viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            历史记录
+    <!-- 顶部用户界面 -->
+    <div class="top-user-interface">
+        <!-- 快速操作面板 -->
+        <div class="quick-actions-panel" id="quickActionsPanel">
+            <div class="quick-action-item" id="historyBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>历史</span>
+            </div>
+            <div class="quick-action-item" id="helpBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span>帮助</span>
+            </div>
         </div>
-        <div class="dropdown-item" id="helpBtn">
-            <svg viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" stroke-width="2"/>
-                <line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2"/>
+
+        <!-- 个人中心按钮 -->
+        <div class="user-center-btn" id="userCenterBtn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            帮助
+        </div>
+
+        <!-- 通知气泡 -->
+        <div class="notification-bubble" id="notificationBubble" style="display: none;">
+            <span class="notification-count" id="notificationCount">3</span>
         </div>
     </div>
 
     <!-- 启动模块 -->
     <div id="splash" class="module splash-module">
-        <div class="container">
-            <div class="card">
-                <div class="card-body" style="text-align: center;">
-                    <div class="loading-animation">
-                        <div class="loading-spinner"></div>
-                    </div>
-                    <h2 class="module-title" style="margin-top: 20px;">当你困惑时</h2>
-                    <h2 class="module-title">答案已在心中</h2>
-                    <p class="module-subtitle" style="margin-top: 12px;">正在连接内心智慧...</p>
-                </div>
+        <div class="page-turning">
+            <div class="page">
+                <div class="corner-decoration top-left"></div>
+                <div class="corner-decoration top-right"></div>
+                <div class="corner-decoration bottom-left"></div>
+                <div class="corner-decoration bottom-right"></div>
+                <div class="center-symbol"></div>
             </div>
-            
-            <div class="login-error" style="display: none; margin-top: 20px;">
-                <div class="card">
-                    <div class="card-body" style="text-align: center;">
-                        <p style="color: var(--system-red); margin-bottom: 16px;">登录失败，请重试</p>
-                        <button id="retryLogin" class="btn btn-primary">重试</button>
-                    </div>
+        </div>
+        <p class="splash-text">当你困惑时，答案已在心中</p>
+        
+        <!-- 加载进度区域 -->
+        <div class="loading-area">
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
                 </div>
+                <p class="progress-text" id="progressText">正在连接内心智慧...</p>
             </div>
+            <div class="loading-dots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+        
+        <div class="login-error" style="display: none;">
+            <p>登录失败，请重试</p>
+            <button id="retryLogin">重试</button>
         </div>
     </div>
 
     <!-- 场景选择模块 -->
     <div id="scene" class="module scene-module" style="display: none;">
-        <div class="container">
-            <div class="module-header">
-                <h1 class="module-title">选择场景</h1>
-                <p class="module-subtitle">选择你想解决的场景，获取专属启示</p>
+        <h2 class="scene-title">选择你想解决的场景，获取专属启示</h2>
+        <div class="scene-cards">
+            <div class="scene-card" data-scene="job">
+                <p>职场选择</p>
             </div>
-            
-            <div class="module-content">
-                <div class="scene-grid">
-                    <div class="scene-card" data-scene="job">
-                        <div class="scene-icon">
-                            <svg viewBox="0 0 24 24" fill="none">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
-                                <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/>
-                            </svg>
-                        </div>
-                        <h3 class="scene-title">职场选择</h3>
-                    </div>
-                    
-                    <div class="scene-card" data-scene="love">
-                        <div class="scene-icon">
-                            <svg viewBox="0 0 24 24" fill="none">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2"/>
-                            </svg>
-                        </div>
-                        <h3 class="scene-title">情感关系</h3>
-                    </div>
-                    
-                    <div class="scene-card" data-scene="daily">
-                        <div class="scene-icon">
-                            <svg viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                                <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
-                            </svg>
-                        </div>
-                        <h3 class="scene-title">日常决策</h3>
-                    </div>
-                </div>
+            <div class="scene-card" data-scene="love">
+                <p>情感关系</p>
+            </div>
+            <div class="scene-card" data-scene="daily">
+                <p>日常琐事</p>
             </div>
         </div>
     </div>
 
     <!-- 提问模块 -->
     <div id="question" class="module question-module" style="display: none;">
-        <div class="container">
-            <div class="module-header">
-                <h1 class="module-title">写下困惑</h1>
-                <p class="module-subtitle">请写下你的具体困惑</p>
-            </div>
-            
-            <div class="module-content">
-                <div class="form-group">
-                    <textarea id="questionInput" placeholder="请写下你的具体困惑（如：是否接受新offer）" maxlength="50" rows="4"></textarea>
-                    <div class="form-footer">
-                        <span id="charCount" class="char-count">0/50</span>
-                        <p id="errorTip" class="error-tip" style="display: none;"></p>
-                    </div>
-                </div>
-                
-                <div class="button-group">
-                    <button id="submitQuestion" class="btn btn-primary">获取启示</button>
-                </div>
-                
-                <div class="divider">
-                    <span class="divider-text">或者</span>
-                </div>
-                
-                <button id="switchToPlumBlossomBtn" class="btn btn-secondary" style="width: 100%;">使用梅花易数</button>
-            </div>
-        </div>
+        <p class="question-tip">请写下你的具体困惑</p>
+        <textarea id="questionInput" placeholder="请写下你的具体困惑（如：是否接受新offer）" maxlength="50"></textarea>
+        <p id="charCount" class="char-count">0/50</p>
+        <p id="errorTip" class="error-tip" style="display: none;"></p>
+        <button id="submitQuestion">点击触发，获取启示</button>
+        <button id="switchToPlumBlossomBtn" class="secondary-btn">使用梅花易数</button>
     </div>
     
     <!-- 梅花易数模块 -->

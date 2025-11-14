@@ -46,7 +46,7 @@ const app = {
         // 启动模块元素
         this.loginError = this.splashModule.querySelector('.login-error');
         this.retryLoginBtn = document.getElementById('retryLogin');
-        this.loadingAnimation = this.splashModule.querySelector('.loading-animation');
+        this.loadingArea = this.splashModule.querySelector('.loading-area');
         this.progressFill = document.getElementById('progressFill');
         this.progressText = document.getElementById('progressText');
         
@@ -98,8 +98,11 @@ const app = {
         this.unitGear = document.getElementById('unitGear');
         
         // 顶部用户界面元素
-        this.userButton = document.querySelector('.user-button');
-        this.dropdownMenu = document.querySelector('.dropdown-menu');
+        this.quickActionsPanel = document.getElementById('quickActionsPanel');
+        this.historyBtn = document.getElementById('historyBtn');
+        this.helpBtn = document.getElementById('helpBtn');
+        this.notificationBubble = document.getElementById('notificationBubble');
+        this.notificationCount = document.getElementById('notificationCount');
     },
     
     // 初始化事件监听
@@ -143,27 +146,23 @@ const app = {
         this.aboutProduct.addEventListener('click', () => this.showAbout());
         
         // 顶部用户界面事件
-        this.userButton.addEventListener('click', (e) => {
+        this.userCenterBtn.addEventListener('click', (e) => {
             e.stopPropagation(); // 防止事件冒泡
-            this.handleUserCenterClick();
-        });
-        
-        // 为下拉菜单项添加事件监听
-        const dropdownItems = document.querySelectorAll('.dropdown-item');
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const action = item.dataset.action;
-                this.handleDropdownAction(action);
-                this.hideDropdownMenu();
-            });
-        });
-        
-        // 点击外部隐藏下拉菜单
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.user-button') && this.dropdownMenu.classList.contains('show')) {
-                this.hideDropdownMenu();
+            const isPanelVisible = this.quickActionsPanel.classList.contains('show');
+            
+            if (isPanelVisible) {
+                this.hideQuickActionsPanel();
+            } else {
+                this.showQuickActionsPanel();
             }
+        });
+        this.historyBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.showHistory();
+        });
+        this.helpBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.showHelp();
         });
     },
     
@@ -202,7 +201,7 @@ const app = {
                     this.userInfo = {
                         openid: this.demoOpenid,
                         nickname: '测试用户' + Math.floor(Math.random() * 1000),
-                        avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiM2NjZGRkYiLz4KPHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIyNCIgeT0iMjQiPgo8cGF0aCBkPSJNMTIgMTJDMTAuMDQ2MyAxMiA4LjUgMTAuNDUzNyA4LjUgOEM4LjUgNi42ODI4MyA5Ljc2NjQ1IDUuNSAxMS41IDUuNUMxMS41IDUuNSAxMS41IDUuNSAxMS41IDUuNUMxMy4yMzQ2IDUuNSAxNC41IDYuNjgyODMgMTQuNSA4QzE0LjUgOS4zNTE3NyAxMy4yMzQ2IDEwLjUgMTEuNSAxMC41QzExLjUgMTAuNSAxMS41IDEwLjUgMTEuNSAxMC41QzEwLjA0NjMgMTAuNSA4LjUgMTEuNTg5NSA4LjUgMTIuNUM4LjUgMTMuNDEwNSA5Ljc2NjQ1IDE0LjUgMTEuNSAxNC41QzEzLjIzNDYgMTQuNSAxNC41IDEzLjQxMDUgMTQuNSAxMi41QzE0LjUgMTEuNTg5NSAxMy4yMzQ2IDEyIDExLjUgMTJaIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMjAgMjFWMTlDMjAgMTcuOTM5MSAxOS41ODY2IDE2LjkyMTcgMTguODI4NCAxNi4xNzE2QzE4LjA4NTkgMTUuNDYwOSAxNy41IDEzLjk0MDUgMTcgMTIuNUMxNi40MTQzIDEzLjQ1MSAxNyAxNy41MTg0IDE1IDE3LjVMMTAuNSAxMy41QzEwLjUgMTMuNSA5IDEzLjUgOC41IDEzLjVDNy40MjE5NyAxMy41IDcgMTMuNSA2IDEyLjVDNiAxMi41IDYgMTIuNSA2IDEyLjUDNCA5LjU1MzE3IDUuNDgzMTEgOC41IDEzIDguNUMxMy41IDguNSAxMy41IDguNSAxMy41IDguNUMxNS42ODg2IDguNSAxNy41IDguNSAxOS41IDIwQzE5LjUgMjAgMTkuNSAyMCAyMCAyMFoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo8L3N2Zz4K',
+                        avatar: 'assets/default-avatar.svg',
                         freeCount: 3
                     };
                     
@@ -221,8 +220,8 @@ const app = {
                 console.error('微信登录失败:', error);
                 
                 // 隐藏加载进度条
-                if (this.loadingAnimation) {
-                    this.loadingAnimation.style.display = 'none';
+                if (this.loadingArea) {
+                    this.loadingArea.style.display = 'none';
                 }
                 
                 this.loginError.style.display = 'block';
@@ -245,9 +244,9 @@ const app = {
     
     // 加载进度相关方法
     showLoadingProgress() {
-        if (this.loadingAnimation) {
-            this.loadingAnimation.classList.add('fade-in');
-            this.loadingAnimation.style.display = 'flex';
+        if (this.loadingArea) {
+            this.loadingArea.classList.add('fade-in');
+            this.loadingArea.style.display = 'block';
         }
     },
     
@@ -290,10 +289,10 @@ const app = {
                 
                 // 延迟执行回调，让用户看到100%
                 setTimeout(() => {
-                    if (this.loadingAnimation) {
-                        this.loadingAnimation.classList.add('fade-out');
+                    if (this.loadingArea) {
+                        this.loadingArea.classList.add('fade-out');
                         setTimeout(() => {
-                            this.loadingAnimation.style.display = 'none';
+                            this.loadingArea.style.display = 'none';
                             if (callback) callback();
                         }, 400);
                     } else if (callback) {
@@ -2529,43 +2528,28 @@ ${numberAnalysis}
 
     // ============ 顶部用户界面功能 ============
     
-    // 处理用户按钮点击
+    // 处理用户中心按钮点击
     handleUserCenterClick: function() {
-        this.handleDropdownClick();
-    },
-    
-    // 处理下拉菜单点击
-    handleDropdownClick: function() {
-        if (this.dropdownMenu.classList.contains('show')) {
-            this.hideDropdownMenu();
+        // 检查是否已有显示的状态
+        const isPanelVisible = this.quickActionsPanel.classList.contains('show');
+        
+        if (isPanelVisible) {
+            this.hideQuickActionsPanel();
         } else {
-            this.showDropdownMenu();
+            this.showQuickActionsPanel();
         }
     },
     
-    // 显示下拉菜单
-    showDropdownMenu: function() {
-        this.dropdownMenu.classList.add('show');
+    // 显示快速操作面板
+    showQuickActionsPanel: function() {
+        this.quickActionsPanel.classList.add('show');
+        // 隐藏通知气泡（模拟已读）
+        this.notificationBubble.style.display = 'none';
     },
     
-    // 隐藏下拉菜单
-    hideDropdownMenu: function() {
-        this.dropdownMenu.classList.remove('show');
-    },
-    
-    // 处理下拉菜单操作
-    handleDropdownAction: function(action) {
-        switch(action) {
-            case 'history':
-                this.showHistory();
-                break;
-            case 'help':
-                this.showHelp();
-                break;
-            case 'about':
-                this.showAbout();
-                break;
-        }
+    // 隐藏快速操作面板
+    hideQuickActionsPanel: function() {
+        this.quickActionsPanel.classList.remove('show');
     },
     
     // 保存到历史记录
@@ -2631,8 +2615,13 @@ ${numberAnalysis}
     
     // 初始化用户界面状态
     initUserInterface: function() {
-        // 用户界面已通过事件监听器处理，暂无额外初始化需要
-        console.log('用户界面初始化完成');
+        // 监听点击外部区域隐藏面板
+        document.addEventListener('click', (e) => {
+            const isClickInsideUI = e.target.closest('.top-user-interface');
+            if (!isClickInsideUI && this.quickActionsPanel.classList.contains('show')) {
+                this.hideQuickActionsPanel();
+            }
+        });
     }
 };
 
